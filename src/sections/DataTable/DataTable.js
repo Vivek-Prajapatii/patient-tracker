@@ -34,14 +34,13 @@ function createData(
   physicianNumber,
   bill,
   nextVisit,
-  physicianID,
-  patientID,
+  physicianId,
+  patientId,
   visitDate
 ) {
   return {
     firstName,
     lastName,
-    Location,
     location,
     age,
     phone,
@@ -54,8 +53,8 @@ function createData(
     physicianNumber,
     bill,
     nextVisit,
-    physicianID,
-    patientID,
+    physicianId,
+    patientId,
     visitDate,
   };
 }
@@ -81,7 +80,7 @@ function Row(props) {
             </IconButton>
           </Link>
         </TableCell>
-        <TableCell>{row.patientID}</TableCell>
+        <TableCell>{row.patientId}</TableCell>
         <TableCell component="th" scope="row">
           {`${row.firstName} ${row.lastName}`}
         </TableCell>
@@ -117,7 +116,7 @@ function Row(props) {
                   <TableCell>{`${row.physicianFirstName} ${row.physicianLastName}`}</TableCell>
                   <TableCell>{row.physicianNumber}</TableCell>
                   <TableCell>{row.bill}</TableCell>
-                  <TableCell>{row.physicianID}</TableCell>
+                  <TableCell>{row.physicianId}</TableCell>
                   <TableCell>{row.visitDate}</TableCell>
                   <TableCell>{row.nextVisit}</TableCell>
                 </TableBody>
@@ -148,68 +147,68 @@ Row.propTypes = {
   }).isRequired,
 };
 
-const rows = [
-  createData(
-    "first_name",
-    "last_name",
-    "Location",
-    "Age",
-    "Phone",
-    "Gender",
-    "Address",
-    "Prescription",
-    "Dose",
-    "Physician_first_name",
-    "Physician_last_name",
-    "Physician Number",
-    "Bill",
-    "Next Visit",
-    "Physician -ID",
-    "Patient- ID",
-    "Visit Date"
-  ),
-  createData(
-    "first_name",
-    "last_name",
-    "Location",
-    "Age",
-    "Phone",
-    "Gender",
-    "Address",
-    "Prescription",
-    "Dose",
-    "Physician_first_name",
-    "Physician_last_name",
-    "Physician Number",
-    "Bill",
-    "Next Visit",
-    "Physician -ID",
-    "Patient- ID",
-    "Visit Date"
-  ),
-  createData(
-    "first_name",
-    "last_name",
-    "Location",
-    "Age",
-    "Phone",
-    "Gender",
-    "Address",
-    "Prescription",
-    "Dose",
-    "Physician_first_name",
-    "Physician_last_name",
-    "7894561230",
-    "Bill",
-    "Next Visit",
-    "Physician -ID",
-    "Patient- ID",
-    "Visit Date"
-  ),
-];
+// const rows = [
+//   createData(
+//     "first_name",
+//     "last_name",
+//     "Location",
+//     "Age",
+//     "Phone",
+//     "Gender",
+//     "Address",
+//     "Prescription",
+//     "Dose",
+//     "Physician_first_name",
+//     "Physician_last_name",
+//     "Physician Number",
+//     "Bill",
+//     "Next Visit",
+//     "Physician -ID",
+//     "Patient- ID",
+//     "Visit Date"
+//   ),
+//   createData(
+//     "first_name",
+//     "last_name",
+//     "Location",
+//     "Age",
+//     "Phone",
+//     "Gender",
+//     "Address",
+//     "Prescription",
+//     "Dose",
+//     "Physician_first_name",
+//     "Physician_last_name",
+//     "Physician Number",
+//     "Bill",
+//     "Next Visit",
+//     "Physician -ID",
+//     "Patient- ID",
+//     "Visit Date"
+//   ),
+//   createData(
+//     "first_name",
+//     "last_name",
+//     "Location",
+//     "Age",
+//     "Phone",
+//     "Gender",
+//     "Address",
+//     "Prescription",
+//     "Dose",
+//     "Physician_first_name",
+//     "Physician_last_name",
+//     "7894561230",
+//     "Bill",
+//     "Next Visit",
+//     "Physician -ID",
+//     "Patient- ID",
+//     "Visit Date"
+//   ),
+// ];
 
-export default function DataTable({ searchQuery }) {
-  console.log(rows);
+export default function DataTable({ searchQuery, rows }) {
+  console.log(rows);  
   const filteredPatients = rows.filter((patient) => {
     const {
       firstName,
@@ -226,8 +225,8 @@ export default function DataTable({ searchQuery }) {
       physicianNumber,
       bill,
       nextVisit,
-      physicianID,
-      patientID,
+      physicianId,
+      patientId,
       visitDate,
     } = patient;
     const lowerCaseQuery = String(searchQuery).toLowerCase();
@@ -247,8 +246,8 @@ export default function DataTable({ searchQuery }) {
       String(physicianNumber).toLowerCase().includes(lowerCaseQuery) ||
       String(bill).toLowerCase().includes(lowerCaseQuery) ||
       String(nextVisit).toLowerCase().includes(lowerCaseQuery) ||
-      String(physicianID).toLowerCase().includes(lowerCaseQuery) ||
-      String(patientID).toLowerCase().includes(lowerCaseQuery) ||
+      String(physicianId).toLowerCase().includes(lowerCaseQuery) ||
+      String(patientId).toLowerCase().includes(lowerCaseQuery) ||
       String(visitDate).toLowerCase().includes(lowerCaseQuery)
     );
   });

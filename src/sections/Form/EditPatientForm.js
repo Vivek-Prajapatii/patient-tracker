@@ -7,7 +7,14 @@ import StepContent from "@mui/material/StepContent";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { Container, Grid, Stack, TextField } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Stack,
+  TextField,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -46,25 +53,28 @@ const steps = [
 export default function EditPatientForm() {
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({});
+  const [isOpen, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("");
   const location = useLocation().state;
 
   React.useEffect(() => {
     const data = {
       "Patient Name (First, Last Name)": `${location?.firstName} ${location?.lastName}`,
-      Location: location?.Location,
-      Age: location?.Age,
-      Gender: location?.Gender,
-      Phone: location?.Phone,
-      Address: location?.Address,
-      Prescription: location?.Prescription,
-      Dose: location?.Dose,
-      "Visit Date": location?.VisitDate,
-      "Next Visit": location?.NextVisit,
-      "Physician ID": location?.PhysicianID,
-      "Physician Name (First, Last Name)": `${location?.PhysicianFirstName} ${location?.PhysicianLastName}`,
-      "Physician Number": location?.PhysicianNumber,
-      Bill: location?.Bill,
-      "Patient ID": location?.PatientID,
+      Location: location?.location,
+      Age: location?.age,
+      Gender: location?.gender,
+      Phone: location?.phone,
+      Address: location?.address,
+      Prescription: location?.prescription,
+      Dose: location?.dose,
+      "Visit Date": location?.visitDate,
+      "Next Visit": location?.nextVisit,
+      "Physician ID": location?.physicianId,
+      "Physician Name (First, Last Name)": `${location?.physicianFirstName} ${location?.physicianLastName}`,
+      "Physician Number": location?.physicianNumber,
+      Bill: location?.bill,
+      "Patient ID": location?.patientId,
     };
     setFormData(data);
   }, [location]);
@@ -81,12 +91,6 @@ export default function EditPatientForm() {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-
-  // const handleReset = () => {
-  //   setActiveStep(0);
-  //   setFormData({});
-  //   setErrors({});
-  // };
 
   const handleInputChange = (event, fieldName) => {
     const { value } = event.target;
@@ -137,7 +141,6 @@ export default function EditPatientForm() {
     setErrors(newErrors);
     return isValid;
   };
-  console.log(formData);
   const handleFinish = () => {
     const fieldMapping = {
       "Patient Name (First, Last Name)": ["firstName", "lastName"],
@@ -165,41 +168,68 @@ export default function EditPatientForm() {
     Object.keys(formData).forEach((oldField) => {
       if (fieldMapping[oldField]) {
         const [newField1, newField2] = fieldMapping[oldField];
-        const [firstName, lastName] = formData[oldField].split(" ");
-        renamedFormData[newField1] = firstName || "";
-        renamedFormData[newField2] = lastName || "";
+        const fieldValue = formData[oldField];
+        if (fieldValue) {
+          const [firstName, lastName] = fieldValue.split(" ");
+          renamedFormData[newField1] = firstName || "";
+          renamedFormData[newField2] = lastName || "";
+        }
       } else {
         renamedFormData[oldField] = formData[oldField];
       }
     });
 
-    console.log(renamedFormData);
-
-    const apiEndpoint = 'YOUR_API_ENDPOINT';
+    const apiEndpoint =
+      `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_URL}update`;
 
     // Make a POST request to the API
     fetch(apiEndpoint, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json', // Set the content type to JSON
-        },
-        body: JSON.stringify(formData), // Convert data to JSON format
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json", // Set the content type to JSON
+      },
+      body: JSON.stringify(renamedFormData), // Convert data to JSON format
     })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then((data) => {
-            // Handle the API response data here if needed
-            console.log(data);
-        })
-        .catch((error) => {
-            // Handle any errors that occur during the fetch
-            console.error('Error:', error);
-        });
-    }
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setOpen(true);
+        setSeverity("success");
+        setMessage("Patient data updated successfully");
+        setActiveStep(0);
+        // Handle the API response data here if needed
+      })
+      .catch((error) => {
+        // Handle any errors that occur during the fetch
+        console.error("Error:", error);
+        setOpen(true);
+        setSeverity("error");
+
+        setMessage(error.message);
+      });
+  };
+
+  const snackbar = () => {
+    return isOpen ? (
+      <Snackbar
+        open={isOpen}
+        autoHideDuration={4000}
+        onClose={() => {
+          setOpen(false);
+        }}
+        // message={message}
+      >
+        <Alert severity={severity}>{message}</Alert>
+      </Snackbar>
+    ) : (
+      <></>
+    );
   };
 
   return (
@@ -215,6 +245,7 @@ export default function EditPatientForm() {
         </Typography>
       </Stack>
       <Box>
+        {isOpen ? snackbar() : <></>}
         <Stepper activeStep={activeStep} orientation="vertical" sx={{ ml: 5 }}>
           {steps.map((step, index) => (
             <Step key={step.label}>

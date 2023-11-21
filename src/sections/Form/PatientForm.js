@@ -147,14 +147,16 @@ export default function PatientForm() {
     Object.keys(formData).forEach((oldField) => {
       if (fieldMapping[oldField]) {
         const [newField1, newField2] = fieldMapping[oldField];
-        const [firstName, lastName] = formData[oldField].split(" ");
-        renamedFormData[newField1] = firstName || "";
-        renamedFormData[newField2] = lastName || "";
+        const fieldValue = formData[oldField];
+        if (fieldValue) {
+          const [firstName, lastName] = fieldValue.split(" ");
+          renamedFormData[newField1] = firstName || "";
+          renamedFormData[newField2] = lastName || "";
+        }
       } else {
         renamedFormData[oldField] = formData[oldField];
       }
     });
-    console.log("renamed formData : ", renamedFormData);
 
     const body = {
       ...renamedFormData,
@@ -163,7 +165,7 @@ export default function PatientForm() {
 
     // fetch api for inserting the data for patients
     const url =
-      "http://localhost:5000/add/1JsoVLud6Id6YdRTcX-fD1RlCuhoeeus0QCdHIJuTnRI";
+      `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_URL}/add`;
     await fetch(url, {
       method: "POST",
       credentials: "include",
